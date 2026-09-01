@@ -38,6 +38,7 @@
 - **加入 Peter Lowe 广告和隐私跟踪域名**：通过 [@PeterLowe/adservers](https://pgl.yoyo.org/adservers) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-DanPollock` 类别中
 - **加入 Dan Pollock 广告域名**：通过 [@DanPollock/hosts](https://someonewhocares.org/hosts) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-PeterLowe` 类别中
 - **加入 AWAvenue-Ads-Rule 广告域名**：通过 [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-AWAvenueAdsRule` 类别中
+- **新增 `geosite:category-ads-official` 独立分类**：将**原版官方** `category-ads-all`（即 [@v2fly/domain-list-community/data/category-ads-all](https://github.com/v2fly/domain-list-community/tree/master/data)，Loyalsoldier 发布版的基础广告规则）单独抽取成一个命名分类，**不含**本仓库额外并入的 AWAvenue 等新增源。它是大合集 `geosite:category-ads-all` 的一个**子集**，适合只想用官方原版广告规则、不要激进新源的用户。`category-ads-all` 仍保持全量并集不变。
 - **加入 Windows 操作系统相关的系统升级和隐私跟踪域名**：
   - 基于 [@crazy-max/WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker/tree/master/data/hosts) 数据
   - [**慎用**] Windows 操作系统使用的隐私跟踪域名 [@crazy-max/WindowsSpyBlocker/hosts/spy.txt](https://github.com/crazy-max/WindowsSpyBlocker/blob/master/data/hosts/spy.txt) 加入到 `geosite:win-spy` 类别中
@@ -55,11 +56,11 @@
 > *.sha256sum 为校验文件。
 
 - **geoip.dat**：
-  - [https://github.com/elysias123/geosite/releases/latest/download/geoip.dat](https://github.com/elysias123/geosite/releases/latest/download/geoip.dat)
-  - [https://cdn.jsdelivr.net/gh/elysias123/geosite@release/geoip.dat](https://cdn.jsdelivr.net/gh/elysias123/geosite@release/geoip.dat)
+  - [https://github.com/itoywh/geosite-ads/releases/latest/download/geoip.dat](https://github.com/itoywh/geosite-ads/releases/latest/download/geoip.dat)
+  - [https://cdn.jsdelivr.net/gh/itoywh/geosite-ads@release/geoip.dat](https://cdn.jsdelivr.net/gh/itoywh/geosite-ads@release/geoip.dat)
 - **geosite.dat**：
-  - [https://github.com/elysias123/geosite/releases/latest/download/geosite.dat](https://github.com/elysias123/geosite/releases/latest/download/geosite.dat)
-  - [https://cdn.jsdelivr.net/gh/elysias123/geosite@release/geosite.dat](https://cdn.jsdelivr.net/gh/elysias123/geosite@release/geosite.dat)
+  - [https://github.com/itoywh/geosite-ads/releases/latest/download/geosite.dat](https://github.com/itoywh/geosite-ads/releases/latest/download/geosite.dat)
+  - [https://cdn.jsdelivr.net/gh/itoywh/geosite-ads@release/geosite.dat](https://cdn.jsdelivr.net/gh/itoywh/geosite-ads@release/geosite.dat)
 
 ## 使用方式
 

@@ -50,6 +50,15 @@ jobs:
           repository: v2fly/domain-list-community
           path: community
 
+      - name: Snapshot official ads list as category-ads-official
+        # 原版官方 ads 规则（v2fly/domain-list-community 的 category-ads-all）单独抽成一个分类，
+        # 命名为 category-ads-official，作为大合集 category-ads-all 的一个子集。
+        # 必须在下方「Write lists to data directory」覆盖 community/data/category-ads-all 之前完成。
+        run: |
+          cp ./community/data/category-ads-all ./community/data/category-ads-official
+          echo "category-ads-official 行数: $(wc -l < ./community/data/category-ads-official)"
+        shell: bash
+
       - name: Checkout cokebar/gfwlist2dnsmasq
         uses: actions/checkout@v6
         with:
