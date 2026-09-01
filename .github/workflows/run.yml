@@ -11,6 +11,9 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # fork 默认 GITHUB_TOKEN 只读，创建 Release/上传 asset/push release 分支都需要写权限
+    permissions:
+      contents: write
     steps:
       - name: Set variables
         run: |
