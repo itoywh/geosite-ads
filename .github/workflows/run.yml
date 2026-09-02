@@ -193,13 +193,13 @@ jobs:
           # AW（AWAvenue）子集：从 build 分支 rule/ 源文件自转，不再 cp 官方 Geosite（2026-09-02）。
           # 语义对齐主规则 ||xxx^（该域及所有子域）：domain/suffix 统一输出裸域名 → dae 默认后缀匹配、覆盖全部子域；
           # keyword 补回（官方 Geosite 丢弃了这 5 条）。ip/ip6/regex geosite 格式不支持，与官方一致正常丢弃。
-          # 口径：完整版 = 广告(rule/) + privacy/ + unwelcome/，与官方 Geosite 覆盖一致；并对产物去重（官方 Geosite 未去重，含重复条目）。
+          # 口径：广告+隐私 = rule/ + privacy/（不含 unwelcome/ 的 P2P/推送/升级/HTTPDNS/STUN 等功能域名，避免误杀正常功能）；
+          # 与官方 Filters/AWAvenue-Ads-Rule-Adguard-No.Unwelcome.txt 逐条等价（2026-09-02 用户拍板）。并对产物去重。
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}domain.txt > aw-src-domain.txt
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}privacy/domain.txt > aw-src-privacy.txt
-          curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}unwelcome/domain.txt > aw-src-unwelcome.txt
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}domain_suffix.txt > aw-src-suffix.txt
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}domain_keyword.txt > aw-src-keyword.txt
-          cat aw-src-domain.txt aw-src-privacy.txt aw-src-unwelcome.txt aw-src-suffix.txt | grep -vE '^\s*(#|$)' | sed 's/\r$//;s/[[:space:]]*$//' | sort --ignore-case -u > ./community/data/category-ads-AWAvenueAdsRule
+          cat aw-src-domain.txt aw-src-privacy.txt aw-src-suffix.txt | grep -vE '^\s*(#|$)' | sed 's/\r$//;s/[[:space:]]*$//' | sort --ignore-case -u > ./community/data/category-ads-AWAvenueAdsRule
           grep -vE '^\s*(#|$)' aw-src-keyword.txt | sed 's/\r$//;s/^/keyword:/' >> ./community/data/category-ads-AWAvenueAdsRule
           sort --ignore-case -u ./community/data/category-ads-AWAvenueAdsRule -o ./community/data/category-ads-AWAvenueAdsRule
           cp ./community/data/category-ads-AWAvenueAdsRule category-ads-AWAvenueAdsRule
