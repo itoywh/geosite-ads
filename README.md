@@ -32,21 +32,17 @@
   - 基于 [@gfwlist/gfwlist](https://github.com/gfwlist/gfwlist) 数据，通过仓库 [@cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成
   - 加入到 `geosite:gfw` 类别中，供习惯于 PAC 模式并希望使用 [GFWList](https://github.com/gfwlist/gfwlist) 的用户使用
   - 同时加入到 `geosite:geolocation-!cn` 类别中
-- **加入 EasyList 和 EasyListChina 广告域名**：通过 [@AdblockPlus/EasylistChina+Easylist.txt](https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-EasyList` 类别中
-- - **加入 EasyListPrivacy 隐私保护域名**：通过 [@easylist.to](https://easylist.to/easylist/easyprivacy.txt) 获取并加入到 `geosite:EasyListPrivacy` 类别中
-- **加入 AdGuard DNS Filter 广告域名**：通过 [@AdGuard/DNS-filter](https://kb.adguard.com/en/general/adguard-ad-filters#dns-filter) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-AdGuardDNSFilter` 类别中
-- **加入 Peter Lowe 广告和隐私跟踪域名**：通过 [@PeterLowe/adservers](https://pgl.yoyo.org/adservers) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-DanPollock` 类别中
-- **加入 Dan Pollock 广告域名**：通过 [@DanPollock/hosts](https://someonewhocares.org/hosts) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-PeterLowe` 类别中
-- **加入 AWAvenue-Ads-Rule 广告域名**：通过 [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-AWAvenueAdsRule` 类别中
-- **新增 `geosite:category-ads-official` 独立分类**：将**原版官方** `category-ads-all`（即 [@v2fly/domain-list-community/data/category-ads-all](https://github.com/v2fly/domain-list-community/tree/master/data)，Loyalsoldier 发布版的基础广告规则）单独抽取成一个命名分类，**不含**本仓库额外并入的 AWAvenue 等新增源。它是大合集 `geosite:category-ads-all` 的一个**子集**，适合只想用官方原版广告规则、不要激进新源的用户。`category-ads-all` 仍保持全量并集不变。
+- **加入 AWAvenue-Ads-Rule 广告域名**：通过 [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-AWAvenueAdsRule` 类别中（口径为广告+隐私，剔除 unwelcome 功能域名）
+- **新增 `geosite:category-ads-official` 独立分类**：将**原版官方** `category-ads-all`（即 [@v2fly/domain-list-community/data/category-ads-all](https://github.com/v2fly/domain-list-community/tree/master/data)，构建期展开 include 索引）单独抽取成一个命名分类。它是大合集 `geosite:category-ads-all` 的一个**子集**，适合只想用官方原版广告规则、不要额外新源的用户。
+- **`geosite:category-ads-all` 大合集 = `category-ads-official` ∪ `category-ads-AWAvenueAdsRule`**：广告规则仅保留官方 + AWAvenue 两个来源，其余 EasyList / AdGuard DNS Filter / Peter Lowe / Dan Pollock 等激进全量源一律移除（2026-09-02 用户拍板，避免误杀正常功能）。
 - **加入 Windows 操作系统相关的系统升级和隐私跟踪域名**：
   - 基于 [@crazy-max/WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker/tree/master/data/hosts) 数据
   - [**慎用**] Windows 操作系统使用的隐私跟踪域名 [@crazy-max/WindowsSpyBlocker/hosts/spy.txt](https://github.com/crazy-max/WindowsSpyBlocker/blob/master/data/hosts/spy.txt) 加入到 `geosite:win-spy` 类别中
   - [**慎用**] Windows 操作系统使用的系统升级域名 [@crazy-max/WindowsSpyBlocker/hosts/update.txt](https://github.com/crazy-max/WindowsSpyBlocker/blob/master/data/hosts/update.txt) 加入到 `geosite:win-update` 类别中
   - [**慎用**] Windows 操作系统附加的隐私跟踪域名 [@crazy-max/WindowsSpyBlocker/hosts/extra.txt](https://github.com/crazy-max/WindowsSpyBlocker/blob/master/data/hosts/extra.txt) 加入到 `geosite:win-extra` 类别中
   - 关于这三个类别的使用方式，请参考下面 [geosite 的 Routing 配置方式](https://github.com/elysias123/v2ray-rules-dat#geositedat-1)
-- **可添加自定义直连、代理和广告域名**：由于上游域名列表更新缓慢或缺失某些域名，所以引入**需要添加的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的三个文件 `direct.txt`、`proxy.txt` 和 `reject.txt`，分别存放自定义的需要添加的直连、代理、广告域名，最终分别加入到 `geosite:cn`、`geosite:geolocation-!cn` 和 `geosite:category-ads-all` 类别中
-- **可移除自定义直连、代理和广告域名**：由于上游域名列表存在需要被移除的域名，所以引入**需要移除的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的三个文件 `direct-need-to-remove.txt`、`proxy-need-to-remove.txt` 和 `reject-need-to-remove.txt`，分别存放自定义的需要从 `direct-list`（直连域名列表）、`proxy-list`（代理域名列表）和 `reject-list`（广告域名列表） 移除的域名
+- **可添加自定义直连和代理域名**：由于上游域名列表更新缓慢或缺失某些域名，所以引入**需要添加的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的 `direct.txt`、`proxy.txt` 分别存放自定义的需要添加的直连、代理域名，最终分别加入到 `geosite:cn`、`geosite:geolocation-!cn` 类别中（`reject.txt` 自定义广告通道已随 2026-09-02 广告源精简一并移除，如需可再加回）
+- **可移除自定义直连和代理域名**：由于上游域名列表存在需要被移除的域名，所以引入**需要移除的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的 `direct-need-to-remove.txt`、`proxy-need-to-remove.txt` 分别存放自定义的需要从 `direct-list`（直连域名列表）、`proxy-list`（代理域名列表）移除的域名
 
 ## 下载地址
 
@@ -75,8 +71,5 @@
 - [@felixonmars/dnsmasq-china-list](https://github.com/felixonmars/dnsmasq-china-list)
 - [@gfwlist/gfwlist](https://github.com/gfwlist/gfwlist)
 - [@cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq)
-- [@AdblockPlus/EasylistChina+Easylist.txt](https://easylist-downloads.adblockplus.org/easylistchina+easylist.txt)
-- [@AdGuard/DNS-filter](https://kb.adguard.com/en/general/adguard-ad-filters#dns-filter)
-- [@PeterLowe/adservers](https://pgl.yoyo.org/adservers)
-- [@DanPollock/hosts](https://someonewhocares.org/hosts)
+- [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule)
 - [@crazy-max/WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker)
