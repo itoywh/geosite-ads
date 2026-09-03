@@ -32,9 +32,9 @@
   - 基于 [@gfwlist/gfwlist](https://github.com/gfwlist/gfwlist) 数据，通过仓库 [@cokebar/gfwlist2dnsmasq](https://github.com/cokebar/gfwlist2dnsmasq) 生成
   - 加入到 `geosite:gfw` 类别中，供习惯于 PAC 模式并希望使用 [GFWList](https://github.com/gfwlist/gfwlist) 的用户使用
   - 同时加入到 `geosite:geolocation-!cn` 类别中
-- **加入 AWAvenue-Ads-Rule 广告域名**：通过 [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-AWAvenueAdsRule` 类别中（口径为广告+隐私，剔除 unwelcome 功能域名）
+- **加入 AWAvenue-Ads-Rule 广告域名**：通过 [@TG-Twilight/AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 获取并加入到 `geosite:category-ads-all` 和 `geosite:category-ads-awavenue` 类别中（口径为广告+隐私，剔除 unwelcome 功能域名）
 - **新增 `geosite:category-ads-official` 独立分类**：将**原版官方** `category-ads-all`（即 [@v2fly/domain-list-community/data/category-ads-all](https://github.com/v2fly/domain-list-community/tree/master/data)，构建期展开 include 索引）单独抽取成一个命名分类。它是大合集 `geosite:category-ads-all` 的一个**子集**，适合只想用官方原版广告规则、不要额外新源的用户。
-- **`geosite:category-ads-all` 大合集 = `category-ads-official` ∪ `category-ads-AWAvenueAdsRule`**：广告规则仅保留官方 + AWAvenue 两个来源，其余 EasyList / AdGuard DNS Filter / Peter Lowe / Dan Pollock 等激进全量源一律移除（2026-09-02 用户拍板，避免误杀正常功能）。
+- **`geosite:category-ads-all` 大合集 = `category-ads-official` ∪ `category-ads-awavenue`**：广告规则仅保留官方 + AWAvenue 两个来源，其余 EasyList / AdGuard DNS Filter / Peter Lowe / Dan Pollock 等激进全量源一律移除（2026-09-02 用户拍板，避免误杀正常功能）。
 - **加入 Windows 操作系统相关的系统升级和隐私跟踪域名**：
   - 基于 [@crazy-max/WindowsSpyBlocker](https://github.com/crazy-max/WindowsSpyBlocker/tree/master/data/hosts) 数据
   - [**慎用**] Windows 操作系统使用的隐私跟踪域名 [@crazy-max/WindowsSpyBlocker/hosts/spy.txt](https://github.com/crazy-max/WindowsSpyBlocker/blob/master/data/hosts/spy.txt) 加入到 `geosite:win-spy` 类别中
@@ -51,11 +51,11 @@
 **加工流水线（官方源快照 → AWAvenueAdsRule 自转 → 并集去重）**
 
 1. **官方源快照为 `category-ads-official`**：构建一开始，先把 v2fly 官方 `data/category-ads-all`（35 行 `include` 指令的索引文件）原样 `cp` 成独立分类。构建器在编译期将其**展开**为 v2fly 官方全量（911 条：748 domain + 162 full，与 v2fly 官方发布版 dlc.dat 逐条一致）。
-2. **AWAvenueAdsRule 子集自转为 `category-ads-AWAvenueAdsRule`**：从 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 的 `build/rule/` 源文件（domain / privacy / suffix / keyword）拉取后自行清洗转换，**不再直接复用官方 Geosite**：
+2. **AWAvenueAdsRule 子集自转为 `category-ads-awavenue`**：从 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 的 `build/rule/` 源文件（domain / privacy / suffix / keyword）拉取后自行清洗转换，**不再直接复用官方 Geosite**：
    - `domain` + `privacy` + `suffix` 三类行合并，剥壳为裸域名（等价 AdGuard `\|\|domain^` 的后缀匹配语义）；
    - `keyword` 行加 `keyword:` 前缀补回（官方 Geosite 构建会丢弃 keyword 行，故手动补 5 条）；
    - `ip`/`ip6`/`regex` 等 geosite 格式不支持的行，与官方行为一致正常丢弃。
-3. **并集生成 `category-ads-all`**：`category-ads-official` ∪ `category-ads-AWAvenueAdsRule` 后 `sort -u` 去重即得大合集。最终条数**不是**两者简单相加——重叠域名会被 trie 父域覆盖吸收（对后缀匹配语义无损）。
+3. **并集生成 `category-ads-all`**：`category-ads-official` ∪ `category-ads-awavenue` 后 `sort -u` 去重即得大合集。最终条数**不是**两者简单相加——重叠域名会被 trie 父域覆盖吸收（对后缀匹配语义无损）。
 
 **遵循的原则（宁少拦，不误伤）**
 

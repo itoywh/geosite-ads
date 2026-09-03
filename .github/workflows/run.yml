@@ -137,7 +137,7 @@ jobs:
           cp ./community/data/cn direct-list.txt
           cp ./community/data/geolocation-\!cn proxy-list.txt
 
-      - name: Create `china-list`、`google-cn`、`apple-cn`、`gfw`、`greatfire`、`category-ads-AWAvenue-Ads-Rule` lists
+      - name: Create `china-list`、`google-cn`、`apple-cn`、`gfw`、`greatfire`、`category-ads-awavenue` lists
         run: |
           curl -sSL $CHINA_DOMAINS_URL | perl -ne '/^server=\/([^\/]+)\// && print "$1\n"' > ./community/data/china-list
           curl -sSL $CHINA_DOMAINS_URL | perl -ne '/^server=\/([^\/]+)\// && print "$1\n"' > china-list.txt
@@ -163,15 +163,15 @@ jobs:
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}privacy/domain.txt > aw-src-privacy.txt
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}domain_suffix.txt > aw-src-suffix.txt
           curl -sSL ${AWAVENUE_ADS_RULE_URL%domain.txt}domain_keyword.txt > aw-src-keyword.txt
-          cat aw-src-domain.txt aw-src-privacy.txt aw-src-suffix.txt | grep -vE '^\s*(#|$)' | sed 's/\r$//;s/[[:space:]]*$//' | sort --ignore-case -u > ./community/data/category-ads-AWAvenueAdsRule
-          grep -vE '^\s*(#|$)' aw-src-keyword.txt | sed 's/\r$//;s/^/keyword:/' >> ./community/data/category-ads-AWAvenueAdsRule
-          sort --ignore-case -u ./community/data/category-ads-AWAvenueAdsRule -o ./community/data/category-ads-AWAvenueAdsRule
-          cp ./community/data/category-ads-AWAvenueAdsRule category-ads-AWAvenueAdsRule
+          cat aw-src-domain.txt aw-src-privacy.txt aw-src-suffix.txt | grep -vE '^\s*(#|$)' | sed 's/\r$//;s/[[:space:]]*$//' | sort --ignore-case -u > ./community/data/category-ads-awavenue
+          grep -vE '^\s*(#|$)' aw-src-keyword.txt | sed 's/\r$//;s/^/keyword:/' >> ./community/data/category-ads-awavenue
+          sort --ignore-case -u ./community/data/category-ads-awavenue -o ./community/data/category-ads-awavenue
+          cp ./community/data/category-ads-awavenue category-ads-awavenue
           # category-ads-all 大合集 = 官方 category-ads-official（v2fly 官方 include 索引，构建期展开）∪ AW 子集（2026-09-02 用户拍板：
           # 广告规则仅保留官方 + AW 两个来源，其余 EasyList/AdGuard/PeterLowe/DanPollock 等一律移除，避免激进全量误杀正常功能）。
           # 官方索引 35 行 include 指令经构建器展开后即 v2fly 官方 category-ads-all 全量（911 条，与 v2fly 官方发布版逐条等价）；
           # AW 的 760 条（755 裸域名 + 5 keyword）直接混排，构建器解析 keyword: 前缀。两者取并集去重。
-          cat ./community/data/category-ads-official ./community/data/category-ads-AWAvenueAdsRule | sort --ignore-case -u > ./community/data/category-ads-all
+          cat ./community/data/category-ads-official ./community/data/category-ads-awavenue | sort --ignore-case -u > ./community/data/category-ads-all
           cp ./community/data/category-ads-all category-ads-all.txt
 
       - name: Build geosite.dat file
