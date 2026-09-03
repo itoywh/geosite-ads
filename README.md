@@ -44,6 +44,27 @@
 - **可添加自定义直连和代理域名**：由于上游域名列表更新缓慢或缺失某些域名，所以引入**需要添加的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的 `direct.txt`、`proxy.txt` 分别存放自定义的需要添加的直连、代理域名，最终分别加入到 `geosite:cn`、`geosite:geolocation-!cn` 类别中（`reject.txt` 自定义广告通道已随 2026-09-02 广告源精简一并移除，如需可再加回）
 - **可移除自定义直连和代理域名**：由于上游域名列表存在需要被移除的域名，所以引入**需要移除的域名**列表。[`hidden 分支`](https://github.com/elysias123/v2ray-rules-dat/tree/hidden)里的 `direct-need-to-remove.txt`、`proxy-need-to-remove.txt` 分别存放自定义的需要从 `direct-list`（直连域名列表）、`proxy-list`（代理域名列表）移除的域名
 
+### 广告分类（`category-ads-*`）是如何加工的
+
+广告规则仅保留**两个来源**，经统一流水线生成三个分类。每次构建后，Release 正文会附上当前各分类的条数统计。
+
+**加工流水线（官方源快照 → AW 自转 → 并集去重）**
+
+1. **官方源快照为 `category-ads-official`**：构建一开始，先把 v2fly 官方 `data/category-ads-all`（35 行 `include` 指令的索引文件）原样 `cp` 成独立分类。构建器在编译期将其**展开**为 v2fly 官方全量（911 条：748 domain + 162 full，与 v2fly 官方发布版 dlc.dat 逐条一致）。
+2. **AW 子集自转为 `category-ads-aw`**：从 [AWAvenue-Ads-Rule](https://github.com/TG-Twilight/AWAvenue-Ads-Rule) 的 `build/rule/` 源文件（domain / privacy / suffix / keyword）拉取后自行清洗转换，**不再直接复用官方 Geosite**：
+   - `domain` + `privacy` + `suffix` 三类行合并，剥壳为裸域名（等价 AdGuard `\|\|domain^` 的后缀匹配语义）；
+   - `keyword` 行加 `keyword:` 前缀补回（官方 Geosite 构建会丢弃 keyword 行，故手动补 5 条）；
+   - `ip`/`ip6`/`regex` 等 geosite 格式不支持的行，与官方行为一致正常丢弃。
+3. **并集生成 `category-ads-all`**：`category-ads-official` ∪ `category-ads-aw` 后 `sort -u` 去重即得大合集。最终条数**不是**两者简单相加——重叠域名会被 trie 父域覆盖吸收（对后缀匹配语义无损）。
+
+**遵循的原则（宁少拦，不误伤）**
+
+- **只用官方 + AW 两源**：EasyList（52k）/ AdGuard DNS Filter（178k）/ Peter Lowe / Dan Pollock 等激进全量源一律不引入。它们会把正常功能域名（下载站、CDN、统计前缀等）整段误拦，拦错代价远高于漏拦。
+- **AW 口径 = 广告 + 隐私，剔除 `unwelcome`**：只取 `rule/`（广告）+ `privacy/`（隐私跟踪）两个子目录，**不取** `unwelcome/` 下的 P2P/推送/升级/HTTPDNS/STUN 等功能性域名，避免把正常功能域名当广告杀掉。与官方 `Filters/AWAvenue-Ads-Rule-Adguard-No.Unwelcome.txt` 逐条等价。
+- **裸域名后缀语义（含子域）**：AW 子集输出裸域名（非 `full:`），dae / v2ray 等按**后缀匹配**，等价 AdGuard 的 `\|\|domain^`（该域及全部子域），与 9/1 前的 `full:` 前缀相比不漏子域。
+- **`full:` 仅官方保留**：官方源里的 162 条 `full:` 精确域名原样保留（它们是官方口径，本就该精确匹配）。
+- **keyword 保底**：AW 的 keyword 规则补回而非丢弃——有些广告不以独立域名出现（如 URL 特征），keyword 是唯一拦截手段。
+
 ## 下载地址
 
 > 如果无法访问域名 `raw.githubusercontent.com`，可以使用第二个地址 `cdn.jsdelivr.net`。
