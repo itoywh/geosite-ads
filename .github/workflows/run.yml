@@ -187,12 +187,25 @@ jobs:
           cd ./publish || exit 1
           sha256sum geosite.dat > geosite.dat.sha256sum
 
+      - name: Generate ads stats for release body
+        # 解析刚构建的 geosite.dat，把官方/AW/all 广告条数统计写进 Release 正文。
+        # 脚本在 master 分支 .github/geosite_stats.py；工作区 checkout 的是 hidden 分支，故用 raw URL 拉当前 commit 版本。
+        run: |
+          curl -sSL "https://raw.githubusercontent.com/${{ github.repository }}/${{ github.sha }}/.github/geosite_stats.py" -o geosite_stats.py
+          python3 geosite_stats.py ./publish/geosite.dat > release_body.md
+          {
+            echo "RELEASE_BODY<<BODY_EOF"
+            cat release_body.md
+            echo "BODY_EOF"
+          } >> "$GITHUB_ENV"
+
       - name: Release and upload assets
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           release_name: ${{ env.RELEASE_NAME }}
           tag: ${{ env.TAG_NAME }}
+          body: ${{ env.RELEASE_BODY }}
           file_glob: true
           file: ./publish/*
 
