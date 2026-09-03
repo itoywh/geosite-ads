@@ -86,7 +86,7 @@ def main():
     # are intentionally not listed.
     SOURCES = (
         ("CATEGORY-ADS-OFFICIAL", "official"),
-        ("CATEGORY-ADS-AWAVENUEADSRULE", "aw"),
+        ("CATEGORY-ADS-AWAVENUEADSRULE", "AWAvenueAdsRule"),
     )
     for path in sys.argv[1:]:
         try:
@@ -118,8 +118,8 @@ def main():
         print()
         print("Notes:")
         print("- `category-ads-official`: upstream v2fly `category-ads-all` subset (raw include index, expanded at build time).")
-        print("- `category-ads-aw`: AWAvenueAdsRule subset (advertising + privacy scope).")
-        print("- `category-ads-all` = union of official + aw; count is not the sum of the two above because overlapping domains are absorbed.")
+        print("- `category-ads-AWAvenueAdsRule`: AWAvenueAdsRule subset (advertising + privacy scope).")
+        print("- `category-ads-all` = union of official + AWAvenueAdsRule; count is not the sum of the two above because overlapping domains are absorbed.")
     return 0
 
 
