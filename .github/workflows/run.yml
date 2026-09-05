@@ -227,3 +227,39 @@ jobs:
           for file in $(ls); do
             curl -i "https://purge.jsdelivr.net/gh/${{ github.repository }}@release/${file}"
           done
+
+      - name: Prune old releases (keep latest 2)
+        # 每次发布后只保留最新 2 个 release（当次 + 上一次，供回滚），更旧的连 release 带 tag 一起删。
+        # 消费方（dae-web geo 更新 / jsdelivr CDN）走 release 分支，不依赖历史 releases，删除无副作用。
+        # releases API 默认按创建时间倒序，首条即刚发布的当次 release。
+        run: |
+          python3 - <<'PYEOF'
+          import json, os, urllib.request
+          repo = os.environ["GITHUB_REPOSITORY"]
+          token = os.environ["GITHUB_TOKEN"]
+          api = f"https://api.github.com/repos/{repo}"
+
+          def api_req(path, method="GET"):
+              req = urllib.request.Request(api + path, method=method, headers={
+                  "Authorization": f"Bearer {token}",
+                  "User-Agent": "release-pruner",
+                  "Accept": "application/vnd.github+json",
+              })
+              with urllib.request.urlopen(req) as resp:
+                  body = resp.read()
+              return json.loads(body) if body else None
+
+          rels = api_req("/releases?per_page=100") or []
+          keep = 2
+          for rel in rels[keep:]:
+              tag = rel.get("tag_name", "?")
+              api_req(f"/releases/{rel['id']}", method="DELETE")
+              try:
+                  api_req(f"/git/refs/tags/{tag}", method="DELETE")
+              except Exception as e:
+                  print(f"tag {tag} 清理跳过: {e}")
+              print(f"已删除 release+tag: {tag}")
+          print("保留:", [r.get("tag_name") for r in rels[:keep]])
+          PYEOF
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
