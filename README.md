@@ -1,3 +1,6 @@
+## Geosite 广告规则加强版
+
+
 # 简介
 
 [Loyalsoldier/v2ray-rules-dat](https://github.com/Loyalsoldier/v2ray-rules-dat)的分支。使用 GitHub Actions 北京时间每天早上 6 点自动构建，保证规则最新。
